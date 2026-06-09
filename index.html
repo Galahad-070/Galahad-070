@@ -3,82 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="My Resume">
-    <title>Harikrishnan P S - Resume</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <meta name="description" content="Harikrishnan P S - Terminal Resume">
+    <title>Harikrishnan P S | Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        /* BASE STYLES & RESET */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #050505;
+            color: #0f0;
+            font-family: 'VT323', monospace;
+            overflow-x: hidden;
+            line-height: 1.4;
+        }
+
+        /* MATRIX CANVAS BACKGROUND */
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -2;
+            opacity: 0.15;
+        }
+
+        /* CRT SCANLINE EFFECT */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            ), 
+            linear-gradient(90deg, 
+                rgba(255, 0, 0, 0.03), 
+                rgba(0, 255, 0, 0.01), 
+                rgba(0, 0, 255, 0.03)
+            );
+            background-size: 100% 4px, 3px 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* MAIN CONTENT CONTAINER */
+        .terminal {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            z-index: 1;
+            position: relative;
+            text-shadow: 0 0 4px rgba(0, 255, 0, 0.6);
+        }
+
+        /* TYPOGRAPHY */
+        header {
+            margin-bottom: 40px;
+            border-bottom: 2px dashed #0f0;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: #fff;
+            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #aaa;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            color: #fff;
+            display: inline-block;
+            border-bottom: 1px solid #0f0;
+        }
+
+        h2::before {
+            content: ">> ";
+            color: #0f0;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        p, li {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        /* LINKS */
+        a {
+            color: #0f0;
+            text-decoration: none;
+            border-bottom: 1px dotted #0f0;
+            transition: all 0.2s ease-in-out;
+        }
+
+        a:hover {
+            background-color: #0f0;
+            color: #000;
+            text-shadow: none;
+        }
+
+        /* LISTS */
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        ul.bullets li::before {
+            content: "[*] ";
+            color: #0f0;
+        }
+
+        /* SECTIONS */
+        .block {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .item {
+            margin-bottom: 20px;
+        }
+        
+        .item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* UPDATED HIGHLIGHT CLASS FOR READABILITY */
+        .highlight {
+            color: #ffcc00; /* Retro Amber */
+            text-shadow: 0 0 4px rgba(255, 204, 0, 0.5);
+            font-weight: bold;
+        }
+
+        /* BLINKING CURSOR */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2rem;
+            background-color: #0f0;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* RESPONSIVE UPDATES FOR MOBILE CLARITY */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .terminal { 
+                padding: 20px 15px; 
+                /* Drastically reduce green glow on mobile to prevent text blurring */
+                text-shadow: 0 0 1px rgba(0, 255, 0, 0.3); 
+            }
+            p, li { font-size: 1.15rem; }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1 class="name">
-                <span class="name-letter">H</span><span class="name-letter">a</span><span class="name-letter">r</span><span class="name-letter">i</span><span class="name-letter">k</span><span class="name-letter">r</span><span class="name-letter">i</span><span class="name-letter">s</span><span class="name-letter">h</span><span class="name-letter">n</span><span class="name-letter">a</span><span class="name-letter">n</span> <span class="name-letter">P</span><span class="name-letter">S</span>
-            </h1>
-            <p class="tagline">Web Developer | Designer | Problem Solver</p>
-        </div>
-    </header>
+    <canvas id="matrix-bg"></canvas>
+    <div class="scanlines"></div>
 
-    <section class="contact">
-        <div class="container">
-            <h2>Contact</h2>
-            <p><strong>Email:</strong> <a href="mailto:galahad@disroot.org">galahad@disroot.org</a></p>
-            <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/harikrishnan-p-s-52603732b/" target="_blank">Harikrishnan P S</a></p>
-            <p><strong>GitHub:</strong> <a href="https://github.com/Galahad-070" target="_blank">Galahad-070</a></p>
-        </div>
-    </section>
+    <main class="terminal">
+        <header>
+            <h1>Harikrishnan P S</h1>
+            <p class="subtitle">./execute --role "Web Developer | Designer | Problem Solver"<span class="cursor"></span></p>
+        </header>
 
-    <section class="about">
-        <div class="container">
-            <h2>About Me</h2>
+        <section class="block">
+            <h2>COMMS_LINK</h2>
+            <div class="contact-grid">
+                <p>EMAIL: <a href="mailto:galahad@disroot.org">galahad@disroot.org</a></p>
+                <p>GITHUB: <a href="https://github.com/Galahad-070" target="_blank">Galahad-070</a></p>
+                <p>LINKEDIN: <a href="https://www.linkedin.com/in/harikrishnan-p-s-52603732b/" target="_blank">Profile_Link</a></p>
+            </div>
+        </section>
+
+        <section class="block">
+            <h2>SYS.INFO</h2>
             <p>
                 Passionate about learning new technologies, I thrive on creative problem solving and continuously improving my skills. Experienced in web development and UX/UI design, I enjoy crafting solutions that are both functional and visually appealing.
             </p>
-        </div>
-    </section>
+        </section>
 
-    <section class="education">
-        <div class="container">
-            <h2>Education</h2>
-            <div class="degree">
-                <h3>Bachelor of Technology in Computer Science (Cyber Security)</h3>
-                <p>Amal Jyothi College of Engineering (2024-2028)</p>
+        <section class="block">
+            <h2>TRAINING</h2>
+            <div class="item">
+                <h3>B.Tech in Computer Science (Cyber Security) - Sem 4</h3>
+                <p>Amal Jyothi College of Engineering [2024 - 2028]</p>
+                <p><span class="highlight">CGPA:</span> 8.42</p>
             </div>
-        </div>
-    </section>
+            <div class="item">
+                <h3>10+2 Grade (CBSE)</h3>
+                <p>Chinmaya Vidyalaya Thazhathangadi [Class of 2024]</p>
+                <p><span class="highlight">Percentage:</span> 80.8%</p>
+            </div>
+        </section>
 
-    <section class="skills">
-        <div class="container">
-            <h2>Skills</h2>
-            <ul>
+        <section class="block">
+            <h2>ARSENAL</h2>
+            <ul class="bullets">
                 <li>HTML5, CSS3, JavaScript</li>
                 <li>UX/UI Design, Figma, Sketch</li>
                 <li>Version Control (Git, GitHub)</li>
-                <li>Python, C</li>
+                <li>Python, C, Java</li>
             </ul>
-        </div>
-    </section>
+        </section>
 
-    <section class="achievements">
-        <div class="container">
-            <h2>Achievements</h2>
-            <div class="achievement-item">
-                <h3>Internship at IIIT Kottayam</h3>
-                <p>Completed a 1-month internship at Indian Institute of Information Technology Kottayam, focusing on understanding and working with computer networks.</p>
+        <section class="block">
+            <h2>ACTIVE_MISSIONS (Projects)</h2>
+            <div class="item">
+                <h3>RevDot <span class="highlight" style="font-size: 1rem;">(Under Development)</span></h3>
+                <p><em>Live RPM monitor for vehicles with no Tachometer.</em></p>
+                <p>Currently developing a real-time automotive telemetry system that integrates a custom Java application and an ESP32 display module with OBD2 hardware for live vehicle data extraction.</p>
+                <p>ACCESS: <a href="https://github.com/Galahad-070/RevDot" target="_blank">Repository_Link</a></p>
             </div>
-            <div class="achievement-item">
-                <h3>Whopyng-scanner Project</h3>
-                <p>Developed a network scanner. Explore the project on GitHub: <a href="https://github.com/Galahad-070/Whopyng-scanner" target="_blank">Whopyng-scanner</a></p>
+            <div class="item">
+                <h3>Playlist Converter</h3>
+                <p><em>Convert Spotify playlists to apps like RiMusic and InnerTune | Python, HTML/CSS.</em></p>
+                <p>Built a web application featuring custom backend parsing to seamlessly extract and convert complex Spotify playlist data into structured CSV exports.</p>
+                <p>ACCESS: <a href="https://github.com/Galahad-070/Spotify-converter" target="_blank">Repository_Link</a></p>
             </div>
-        </div>
-    </section>
+            <div class="item">
+                <h3>Whopyng-scanner</h3>
+                <p><em>Network Scanner Tool.</em></p>
+                <p>Developed a custom network scanner tool to identify active devices.</p>
+                <p>ACCESS: <a href="https://github.com/Galahad-070/Whopyng-scanner" target="_blank">Repository_Link</a></p>
+            </div>
+        </section>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Harikrishnan P S. All rights reserved.</p>
-        </div>
-    </footer>
+        <section class="block">
+            <h2>TROPHIES & LOGS</h2>
+            <ul class="bullets">
+                <li><span class="highlight">Google Cybersecurity Professional Certificate</span> | Google</li>
+                <li><span class="highlight">YIP 8.0 District level Winner</span> | K-DISC</li>
+                <li><span class="highlight">Internship @ IIIT Kottayam</span> | Completed a 1-month internship focusing on understanding and working with computer networks.</li>
+            </ul>
+        </section>
 
-    <script src="script.js"></script>
+        <footer style="text-align: center; margin-top: 50px; color: #555;">
+            <p>SYS.HALT // &copy; 2025 Harikrishnan P S.</p>
+        </footer>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+        const charArray = chars.split('');
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 50);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
 </body>
 </html>
